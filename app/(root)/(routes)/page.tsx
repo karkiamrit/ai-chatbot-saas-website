@@ -1,12 +1,9 @@
 import React from 'react'
 import { UserButton } from "@clerk/nextjs";
  
-type Props = {}
-
-const RootPage = (props: Props) => {
+const RootPage = () => {
   return (
     <div >
-        Root Page (Protected)
         <UserButton afterSignOutUrl="/" />
     </div>
   )
