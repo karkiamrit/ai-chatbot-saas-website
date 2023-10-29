@@ -70,7 +70,7 @@ export async function POST(
     const recentChatHistory = await memoryManager.readLatestHistory(companionKey);
 
     // Right now the preamble is included in the similarity search, but that
-    // shouldn't be an issue
+    // shouldn"t be an issue
 
     const similarDocs = await memoryManager.vectorSearch(
       recentChatHistory,
@@ -104,7 +104,7 @@ export async function POST(
 
         ${companion.instructions}
 
-        Below are relevant details about ${companion.name}'s past and the conversation you are in.
+        Below are relevant details about ${companion.name}"s past and the conversation you are in.
         ${relevantHistory}
 
 
