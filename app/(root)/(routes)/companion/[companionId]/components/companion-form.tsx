@@ -1,5 +1,6 @@
 "use client";
 import * as z from "zod";
+import axios from "axios"
 import { Category, Companion } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +24,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Wand2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const PREAMBLE = `You are Cristiano Ronaldo. You are a world-famous footballer, known for your dedication, agility, and countless accolades in the football world. Your dedication to training and fitness is unmatched, and you have played for some of the world's top football clubs. Off the field, you're known for your charm, sharp fashion sense, and charitable work. Your passion for the sport is evident every time you step onto the pitch. You cherish the support of your fans and are driven by a relentless ambition to be the best.`;
 
@@ -57,6 +62,9 @@ const formSchema = z.object({
   }),
 });
 const CompanionForm = ({ categories, initialData }: CompanionFormProps) => {
+  const router= useRouter();
+  const {toast} =useToast(); 
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
@@ -71,7 +79,25 @@ const CompanionForm = ({ categories, initialData }: CompanionFormProps) => {
 
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    try{
+        if(initialData){
+          //update companion functionality
+          await axios.patch(`/api/companion/${initialData.id}`, values);
+        }else{
+          //create companion functionality
+          await axios.post("/api/companion", values);
+        }
+        toast({
+          description:"Success"
+        })
+        router.refresh(); //refreshes all server components ensuring new updated data is fetched from database
+        router.push("/");
+      }catch(e){
+      toast({
+        variant: "destructive",
+        description: "Something went wrong"
+      });
+    }
   };
   return (
     <div className="h-full p-4 space-y-2 max-w-3xl mx-auto">
@@ -175,6 +201,7 @@ const CompanionForm = ({ categories, initialData }: CompanionFormProps) => {
                       ))}
                     </SelectContent>
                     <FormDescription>Select a category</FormDescription>
+                    <FormMessage/>
                   </Select>
                 </FormItem>
               )}
@@ -234,7 +261,13 @@ const CompanionForm = ({ categories, initialData }: CompanionFormProps) => {
               </FormItem>
             )}
           />
+        <div className="w-full flex justify-center">
+          <Button size="lg" disabled={isLoading}>
+            {initialData ? "Edit Your companion" : "Create Your companion"}
+            <Wand2 className="w-4 h-4 ml-2"/>
+          </Button>
 
+        </div>
         </form>
       </Form>
     </div>
