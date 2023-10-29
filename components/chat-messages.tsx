@@ -42,7 +42,7 @@ const ChatMessages = ({
           role={message.role}
           key={message.content}
           content={message.content}
-          src={message.src}
+          src={companion.src}
         />
       ))}
       {isLoading && <ChatMessage role="system" isLoading src={companion.src} />}
