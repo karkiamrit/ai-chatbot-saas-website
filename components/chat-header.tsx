@@ -2,8 +2,8 @@
 
 import axios from "axios";
 
-import { Companion } from "@prisma/client";
-import { Message } from "postcss";
+import { Companion, Message } from "@prisma/client";
+
 import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
